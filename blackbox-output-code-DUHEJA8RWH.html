@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Farhan FF Account Info</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #ff4444 0%, #ff6b35 25%, #f7931e 50%, #ffd23f 75%, #ff4444 100%);
+            background-size: 400% 400%;
+            animation: freefire-bg 8s ease infinite;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        @keyframes freefire-bg {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .container {
+            background: rgba(0, 0, 0, 0.9);
+            backdrop-filter: blur(20px);
+            border: 3px solid #ffd23f;
+            border-radius: 25px;
+            box-shadow: 0 30px 60px rgba(255, 68, 68, 0.4);
+            padding: 50px;
+            max-width: 700px;
+            width: 100%;
+            text-align: center;
+            position: relative;
+        }
+
+        .title {
+            background: linear-gradient(45deg, #ffd23f, #ff6b35, #ff4444);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-size: 3em;
+            font-weight: 900;
+            margin-bottom: 10px;
+            text-shadow: 0 0 40px #ffd23f;
+            letter-spacing: 3px;
+        }
+
+        .subtitle {
+            color: #ffd23f;
+            font-size: 1.4em;
+            margin-bottom: 40px;
+            text-shadow: 0 0 20px #ffd23f;
+        }
+
+        .search-box {
+            position: relative;
+            margin-bottom: 30px;
+        }
+
+        #accountId {
+            width: 100%;
+            padding: 20px 25px 20px 80px;
+            font-size: 24px;
+            font-weight: 800;
+            border: 4px solid #ff4444;
+            border-radius: 50px;
+            background: rgba(255, 255, 255, 0.95);
+            outline: none;
+            text-align: center;
+            letter-spacing: 2px;
+            transition: all 0.4s ease;
+        }
+
+        #accountId:focus {
+            border-color: #ffd23f;
+            box-shadow: 0 0 30px rgba(255, 210, 63, 0.6);
+            transform: scale(1.03);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 30px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 28px;
+            color: #ff4444;
+        }
+
+        #searchBtn {
+            background: linear-gradient(135deg, #ff4444, #ff6b35, #ffd23f);
+            color: white;
+            border: none;
+            padding: 20px 50px;
+            border-radius: 50px;
+            font-size: 22px;
+            font-weight: 900;
+            cursor: pointer;
+            margin-top: 20px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            box-shadow: 0 15px 40px rgba(255, 68, 68, 0.5);
+            transition: all 0.3s ease;
+        }
+
+        #searchBtn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 25px 50px rgba(255, 68, 68, 0.7);
+        }
+
+        #searchBtn:active {
+            transform: translateY(-2px);
+        }
+
+        .result, .error {
+            margin-top: 40px;
+            padding: 40px;
+            border-radius: 20px;
+            display: none;
+            backdrop-filter: blur(15px);
+        }
+
+        .result {
+            background: rgba(0, 255, 0, 0.15);
+            border: 3px solid #00ff00;
+            color: white;
+            text-align: left;
+        }
+
+        .error {
+            background: rgba(255, 0, 0, 0.2);
+            border: 3px solid #ff4444;
+            color: #ffd23f;
+            text-align: center;
+            font-size: 20px;
+            font-weight: 700;
+        }
+
+        .account-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        .info-group {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 30px;
+            border-radius: 15px;
+            border-left: 5px solid #ffd23f;
+        }
+
+        .info-group h3 {
+            color: #ffd23f;
+            margin-bottom: 20px;
+            font-size: 1.5em;
+        }
+
+        .info-group p {
+            font-size: 1.1em;
+            margin-bottom: 15px;
+            color: white;
+        }
+
+        .highlight {
+            color: #ffd23f !important;
+            font-weight: 900 !important;
+            font-size: 1.2em !important;
+            text-shadow: 0 0 15px #ffd23f;
+        }
+
+        .loading {
+            display: none;
+            color: #ffd23f;
+            font-size: 24px;
+            margin-top: 20px;
+            font-weight: 700;
+            text-shadow: 0 0 20px #ffd23f;
+        }
+
+        @keyframes successAnim {
+            0% { transform: scale(0.8); opacity: 0; }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .result.show {
+            display: block;
+            animation: successAnim 0.8s ease-out;
+        }
+
+        .error.show {
+            display: block;
+            animation: shake 0.5s ease-in-out;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="title">Farhan FF</h1>
+        <h2 class="subtitle">Account Checker</h2>
+        
+        <div class="search-box">
+            <span class="search-icon">🔍</span>
+            <input type="text" id="accountId" placeholder="925521673" maxlength="9">
+        </div>
+        
+        <button id="searchBtn">🔥 CHECK ACCOUNT</button>
+        
+        <div class="loading" id="loading">🔥 Loading...</div>
+        
+        <div class="error" id="error">
+            ❌ INVALID ID! Only <span class="highlight">925521673</span> works!
+        </div>
+        
+        <div class="result" id="result">
+            <h2 style="text-align: center; color: #00ff00; margin-bottom: 30px; font-size: 2.5em;">
+                ✅ PLAYER FOUND!
+            </h2>
+            
+            <div class="account-info">
+                <div class="info-group">
+                    <h3>👤 Account Info</h3>
+                    <p><strong>Name:</strong> <span class="highlight">FᎪᎡᎷᎪΝㅤㅤХ9</span></p>
+                    <p><strong>Region:</strong> <span class="highlight">PK</span></p>
+                    <p><strong>Level:</strong> <span class="highlight">57</span></p>
+                    <p><strong>Likes:</strong> <span class="highlight">1806</span></p>
+                </div>
+                
+                <div class="info-group">
+                    <h3>📅 Login Info</h3>
+                    <p><strong>Created:</strong> <span class="highlight">4/21/2019, 8:54:35 PM</span></p>
+                    <p><strong>Last Login:</strong> <span class="highlight">3/10/2026, 9:06:36 PM</span></p>
+                </div>
+                
+                <div class="info-group">
+                    <h3>🥇 BR Ranks</h3>
+                    <p><strong>Max Rank:</strong> <span class="highlight">318</span></p>
+                    <p><strong>Points:</strong> <span class="highlight">3162</span></p>
+                </div>
+                
+                <div class="info-group">
+                    <h3>⚔️ CS Ranks</h3>
+                    <p><strong>Max Rank:</strong> <span class="highlight">301</span></p>
+                    <p><strong>Title:</strong> <span class="highlight">904090026</span></p>
+                </div>
+                
+                <div class="info-group">
+                    <h3>🏰 Guild</h3>
+                    <p><strong>Level:</strong> <span class="highlight">3</span></p>
+                    <p><strong>Members:</strong> <span class="highlight">37/45</span></p>
+                </div>
+                
+                <div class="info-group">
+                    <h3>💎 Credits</h3>
+                    <p><strong>Pet Level:</strong> <span class="highlight">4 (EXP: 501)</span></p>
+                    <p><strong>Credit Score:</strong> <span class="highlight">100</span></p>
+                    <p><strong>Rewards:</strong> <span class="highlight">UNCLAIMED</span></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const VALID_ID = "925521673";
+        const accountInput = document.getElementById('accountId');
+        const searchButton = document.getElementById('searchBtn');
+        const loadingEl = document.getElementById('loading');
+        const errorEl = document.getElementById('error');
+        const resultEl = document.getElementById('result');
+
+        function checkAccount() {
+            const inputValue = accountInput.value.replace(/[^0-9]/g, '').trim();
+            
+            // Hide all results first
+            loadingEl.style.display = 'block';
+            errorEl.classList.remove('show');
+            resultEl.classList.remove('show');
+            
+            setTimeout(() => {
+                loadingEl.style.display = 'none';
+                
+                if (inputValue === VALID_ID) {
+                    // SHOW PLAYER INFO
+                    resultEl.classList.add('show');
+                    console.log('✅ CORRECT ID - Player info shown');
+                } else {
+                    // SHOW ERROR
+                    errorEl.classList.add('show');
+                    console.log('❌ WRONG ID:', inputValue);
+                }
+                
+                accountInput.focus();
+            }, 800);
+        }
+
+        // Button click
+        searchButton.onclick = function() {
+            checkAccount();
+        };
+
+        // Enter key
+        accountInput.onkeypress = function(e) {
+            if (e.key === 'Enter') {
+                checkAccount();
+            }
+        };
+
+        // Auto focus
+        window.onload = function() {
+            accountInput.focus();
+        };
+    </script>
+</body>
+</html>
